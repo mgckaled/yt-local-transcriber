@@ -1,4 +1,4 @@
-# Modelos de IA — matriz por papel (CPU-only)
+status# Modelos de IA — matriz por papel (CPU-only)
 
 > Guia de modelos open-source para o mill.tools, calibrado para o hardware-alvo e
 > para os próximos PRs (Tier 0, PR6 Biblioteca, PR7 IA/RAG, PR8 Receitas).
@@ -16,7 +16,7 @@
 - **CPU:** Intel i5-8265U — **4 núcleos físicos** / 8 lógicos.
 - **RAM:** 16 GB (comporta até 7–8B Q4 ao lado de browser/VSCode).
 - **GPU:** NVIDIA MX150, 2 GB VRAM — **reservada para o Whisper (CUDA)**.
-- **OS:** Windows 10.
+- **OS:** Windows 11 (25H2) — era Windows 10 quando este guia foi escrito; nada aqui muda com o upgrade.
 
 **Decisão:** os LLMs/VLMs do mill.tools rodam **CPU-only** (`num_gpu 0`). Isso:
 

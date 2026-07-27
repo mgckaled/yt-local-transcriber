@@ -4,6 +4,12 @@ Referência das dores de plataforma que aparecem espalhadas pelo código. Não s
 arquitetura — são armadilhas do mundo real (Windows, GPU fraca, YouTube) que o projeto contorna. Reúno
 aqui para consulta.
 
+> **Máquina de referência:** Windows 11 Home **25H2** (migrou do Windows 10 Home em jul/2026). **Nenhum
+> quirk da Parte 1 deixou de valer** — o ACP continua sendo cp1252 (a opção "UTF-8 mundial" segue como
+> *beta*, opt-in), o MAX_PATH continua opt-in e o Defender continua sendo o Defender. O 25H2 remove
+> **WMIC** e **PowerShell 2.0**, que o projeto não usa. O que mudou de verdade foi o **caminho das
+> configurações de GPU** (Parte 2).
+
 ---
 
 # PARTE 1 — Quirks de Windows
@@ -54,8 +60,17 @@ O Flet (DirectX) e o Whisper (CUDA) disputam a MX150 (2GB VRAM) — uso simultâ
 `WIN32K_POWER_WATCHDOG_TIMEOUT`. Mitigações no projeto:
 - `LogEventHandler` em INFO; libs ruidosas capadas em WARNING; fila de áudio sequencial.
 - Compute `int8_float32` (a MX150 é Pascal, sem suporte a algumas precisões).
-- Se persistir: forçar `python.exe` em "Economia de energia" (iGPU Intel) nas configs de gráficos do
-  Windows.
+- Se persistir: forçar `python.exe` em "Economia de energia" (iGPU Intel) em **Configurações → Sistema →
+  Tela → Elementos gráficos → Configurações personalizadas para aplicativos**. No Windows 10 essa tela se
+  chamava "Configurações de elementos gráficos"; no 11 ela virou uma página própria com a lista de apps.
+- **Só no Windows 11:** o **Agendamento de GPU acelerado por hardware** (HAGS) vem **ligado por padrão** e é
+  um suspeito recorrente em BSODs de watchdog de energia. Fica na mesma tela, em *Alterar as configurações
+  padrão de elementos gráficos*. Se o BSOD reaparecer depois do upgrade, desligar o HAGS é o primeiro teste.
+
+⚠️ **Driver NVIDIA — Pascal virou legado.** O ramo **R580** é o último com suporte regular a
+Maxwell/Pascal/Volta, e o **CUDA 13 já não suporta Pascal** (o 12.x sim). Traduzindo para este projeto:
+**não atualizar driver nem CUDA por reflexo** — manter CUDA 12.6 e driver ≤ R580, senão o faster-whisper
+perde a GPU. Isso não tem relação com o Windows 11; é só a mesma máquina envelhecendo junto.
 
 🔑 É por isso que só a **Transcrição** usa GPU pesada (Whisper); o resto do encode é **100% CPU, sem
 NVENC** (decisão definitiva — [`../modulos/transcricao.md`](../modulos/transcricao.md)).

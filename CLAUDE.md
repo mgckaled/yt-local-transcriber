@@ -277,13 +277,25 @@ skill `ml-rag`.
 
 Flet (DirectX) e Whisper (CUDA) disputam a MX150 — uso simultâneo pode causar BSOD
 `WIN32K_POWER_WATCHDOG_TIMEOUT`. Mitigações: `LogEventHandler` em INFO; libs ruidosas capadas em WARNING; fila
-de áudio sequencial. Se persistir: forçar `python.exe` em "Economia de energia" (iGPU Intel) nas configs de
-gráficos do Windows.
+de áudio sequencial. Se persistir: forçar `python.exe` em **"Economia de energia"** (iGPU Intel) em
+**Configurações → Sistema → Tela → Elementos gráficos → Configurações personalizadas para aplicativos**
+(caminho do Windows 11; no 10 era "Configurações de elementos gráficos"). Segundo knob no Windows 11:
+desligar o **Agendamento de GPU acelerado por hardware** (HAGS) na mesma tela → *Alterar as configurações
+padrão de elementos gráficos* — ligado por padrão no 11 e suspeito em BSODs de watchdog de energia.
+
+> **Driver NVIDIA — Pascal virou legado**: o ramo **R580** é o último com suporte regular a Maxwell/Pascal/
+> Volta, e o **CUDA 13 não suporta Pascal** (o 12.x sim). Ou seja: **não atualizar driver/CUDA cegamente** —
+> manter CUDA 12.6 + driver ≤ R580. Isso independe do Windows 11, mas afeta a mesma máquina.
 
 ## Hardware de desenvolvimento
 
 Dell Inspiron 7580 — i5-8265U, 16GB RAM · NVIDIA MX150 (2GB VRAM), CUDA 12.6 · compute `int8_float32`
-(Pascal) · throttling gerenciado pelo EC Dell (~63-65°C) · Windows 10 Home.
+(Pascal) · throttling gerenciado pelo EC Dell (~63-65°C) · **Windows 11 Home, versão 25H2** (era Windows 10
+Home até jul/2026).
+
+> **O upgrade p/ Windows 11 25H2 não invalida nenhum quirk documentado** (cp1252, MAX_PATH, `.temp` do
+> yt-dlp/Defender, `:` do burn-in, lock de `.pyd`) — todos continuam valendo. O 25H2 remove **WMIC** e
+> **PowerShell 2.0**; o projeto não usa nenhum dos dois, logo sem impacto.
 
 ## Roadmap
 

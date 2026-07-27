@@ -651,3 +651,28 @@ módulo já é puro (sem Flet), a GUI reusá-lo é mais barato que inventar uma 
 espelho inverso da exceção já existente (a CLI reusa `gui/modules/<m>/worker.py` puro) — juntas, as duas são
 as únicas travessias de camada registradas no projeto. O import mora só em `run_ai_command`, comentado
 inline; `cli/ai.py::_nl2cli` (`ai --cmd`) usa o mesmo `cli/reference.py` diretamente, já na camada correta.
+
+### Mudança de ambiente: Windows 10 Home → Windows 11 Home 25H2 (jul/2026)
+A máquina de desenvolvimento migrou para o Windows 11, versão 25H2. **Nenhum quirk de plataforma documentado
+foi invalidado** — auditoria feita na migração:
+
+- **cp1252 / `subprocess` binário** — o ACP do Windows 11 continua cp1252; a opção "UTF-8 mundial" segue como
+  *beta* opt-in. A regra (`Popen`/`run` sem `text=True` + decode manual) permanece obrigatória.
+- **MAX_PATH (~260)** — continua opt-in; `sanitize_filename` segue necessário.
+- **`.temp.<ext>` do yt-dlp + `[WinError 32]` do Defender** — Defender inalterado; as mitigações de Áudio
+  (`tempfile.mkdtemp()` + `shutil.move`) e Vídeo (nunca `FFmpegVideoConvertor`) continuam valendo.
+- **`:` do drive no burn-in de legenda** e **lock de `.pyd` no `uv sync`** (`uv run poe repair`) — inalterados.
+- **Removidos no 25H2: WMIC e PowerShell 2.0** — o projeto não usa nenhum dos dois. Zero impacto.
+
+O que **mudou de fato** foi o caminho da configuração de GPU (Configurações → Sistema → Tela → **Elementos
+gráficos** → Configurações personalizadas para aplicativos), mais um knob novo: o **HAGS** (Agendamento de GPU
+acelerado por hardware) vem ligado por padrão no Windows 11 e é o primeiro suspeito se o BSOD
+`WIN32K_POWER_WATCHDOG_TIMEOUT` reaparecer. Detalhe em
+[`estudo/conceitos/APENDICE_WINDOWS_HARDWARE.md`](estudo/conceitos/APENDICE_WINDOWS_HARDWARE.md).
+
+Ortogonal ao upgrade, mas registrado na mesma passagem: a **MX150 (Pascal) entrou em legado na NVIDIA** — o
+ramo **R580** é o último com suporte regular a Maxwell/Pascal/Volta e o **CUDA 13 não suporta Pascal**.
+Congelar em CUDA 12.6 + driver ≤ R580; um "update automático" de driver pode custar a GPU do faster-whisper.
+
+> `reference/RELATORIO_CENARIO_TORCH.md` continua dizendo "Windows 10" **de propósito**: é um relatório datado
+> (jun/2026) e vale como registro do que era verdade na época.

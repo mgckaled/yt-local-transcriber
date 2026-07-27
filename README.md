@@ -7,7 +7,7 @@
 ![Python](https://img.shields.io/badge/Python-3.13+-3776AB?logo=python&logoColor=white)
 ![uv](https://img.shields.io/badge/uv-managed-DE5FE9)
 ![Flet](https://img.shields.io/badge/GUI-Flet%200.85-02569B)
-![Windows](https://img.shields.io/badge/Windows-10%2B-0078D4)
+![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4)
 ![faster-whisper](https://img.shields.io/badge/faster--whisper-GPU-FFB000)
 ![Ollama](https://img.shields.io/badge/Ollama-local-000000?logo=ollama&logoColor=white)
 ![Gemini](https://img.shields.io/badge/Gemini-opt--in-8E75B2?logo=googlegemini&logoColor=white)
